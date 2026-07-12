@@ -1,0 +1,6 @@
+{
+  "name": "Creative Agency ERP",
+  "description": "Professional, enterprise-grade people operations and agency ERP platform with a light-mode layout tailored for high-contrast corporate administration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

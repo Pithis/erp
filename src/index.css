@@ -1,0 +1,251 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+:root {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Theme variables - Light Mode Tech Theme */
+  --app-bg: #f5f7fa;
+  --app-text: #334155;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  --input-bg: #ffffff;
+  --input-text: #0f172a;
+  --input-border: #cbd5e1;
+  --text-muted: #64748b;
+  --text-primary: #0f172a;
+  --bg-muted: #f8fafc;
+  --header-bg: rgba(255, 255, 255, 0.9);
+  --demo-item-bg: #ffffff;
+  --table-hover: #f8fafc;
+  --tech-glow: rgba(79, 70, 229, 0.035);
+}
+
+.dark {
+  /* Theme variables - Dark Mode Cyber Theme */
+  --app-bg: #080b11;
+  --app-text: #cbd5e1;
+  --card-bg: #111827;
+  --card-border: rgba(99, 102, 241, 0.18);
+  --input-bg: #1f2937;
+  --input-text: #f9fafb;
+  --input-border: rgba(255, 255, 255, 0.1);
+  --text-muted: #94a3b8;
+  --text-primary: #ffffff;
+  --bg-muted: #131b2e;
+  --header-bg: rgba(17, 24, 39, 0.9);
+  --demo-item-bg: #111827;
+  --table-hover: #162032;
+  --tech-glow: rgba(99, 102, 241, 0.095);
+}
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-gray-50: var(--bg-muted);
+  --color-gray-100: var(--card-border);
+  --color-gray-200: var(--card-border);
+  --color-gray-300: var(--input-border);
+  --color-gray-400: var(--text-muted);
+  --color-gray-500: var(--text-muted);
+  --color-gray-600: var(--app-text);
+  --color-gray-700: var(--app-text);
+  --color-gray-800: var(--text-muted);
+  --color-gray-900: var(--text-primary);
+  --color-gray-950: var(--text-primary);
+}
+
+@layer base {
+  body {
+    background-color: var(--app-bg) !important;
+    background-image: 
+      radial-gradient(var(--tech-glow) 1.5px, transparent 1.5px),
+      radial-gradient(var(--tech-glow) 1.5px, transparent 1.5px);
+    background-size: 24px 24px;
+    background-position: 0 0, 12px 12px;
+    color: var(--app-text) !important;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+  
+  /* Form elements with elegant variable backgrounds */
+  input, select, textarea, option {
+    background-color: var(--input-bg) !important;
+    color: var(--input-text) !important;
+    border-color: var(--input-border) !important;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  
+  input:focus, select:focus, textarea:focus {
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.15) !important;
+    outline: none !important;
+  }
+
+  /* Tables: Crisp and professional */
+  th {
+    color: var(--text-muted) !important;
+    border-color: var(--card-border) !important;
+  }
+  
+  td {
+    border-color: var(--card-border) !important;
+  }
+  
+  tr:hover {
+    background-color: var(--table-hover) !important;
+  }
+}
+
+@layer utilities {
+  .animate-slide-in {
+    animation: slideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
+/* Variable-based overrides to ensure perfect contrast in both themes */
+.bg-white {
+  background-color: var(--card-bg) !important;
+  transition: background-color 0.2s ease;
+}
+
+.bg-white\/90 {
+  background-color: var(--header-bg) !important;
+  transition: background-color 0.2s ease;
+}
+
+.shadow-sm, .shadow-md, .shadow-lg, .shadow-xl {
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.08) !important;
+}
+
+.border-gray-100 {
+  border-color: var(--card-border) !important;
+  transition: border-color 0.2s ease;
+}
+
+.border-gray-200 {
+  border-color: var(--card-border) !important;
+  transition: border-color 0.2s ease;
+}
+
+.bg-gray-50 {
+  background-color: var(--bg-muted) !important;
+  transition: background-color 0.2s ease;
+}
+
+.bg-gray-50\/50 {
+  background-color: var(--bg-muted) !important;
+  opacity: 0.85;
+}
+
+.bg-gray-50\/70 {
+  background-color: var(--bg-muted) !important;
+  opacity: 0.9;
+}
+
+/* Typography coloring overrides */
+.text-gray-500, .text-gray-400 {
+  color: var(--text-muted) !important;
+}
+
+.text-gray-600 {
+  color: var(--app-text) !important;
+}
+
+.text-gray-700 {
+  color: var(--app-text) !important;
+}
+
+.text-gray-800 {
+  color: var(--text-primary) !important;
+}
+
+.text-gray-900 {
+  color: var(--text-primary) !important;
+}
+
+.text-gray-950 {
+  color: var(--text-primary) !important;
+}
+
+/* Active and inactive tabs styling */
+#header-tab-dashboard, #header-tab-inventory, #header-tab-scheduling, #header-tab-architecture {
+  color: var(--text-muted);
+}
+
+#header-tab-dashboard.bg-white, #header-tab-inventory.bg-white, #header-tab-scheduling.bg-white, #header-tab-architecture.bg-white {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05) !important;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(100px) scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Translucent Neon badge overrides in dark mode */
+.dark .bg-indigo-50 {
+  background-color: rgba(99, 102, 241, 0.15) !important;
+}
+
+.dark .bg-emerald-50 {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+}
+
+.dark .bg-amber-50 {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+}
+
+.dark .bg-red-50 {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+}
+
+.dark .bg-blue-50 {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+}
+
+.dark .bg-purple-50 {
+  background-color: rgba(139, 92, 246, 0.15) !important;
+}
+
+.dark .text-indigo-600 {
+  color: #818cf8 !important;
+}
+
+.dark .text-emerald-700 {
+  color: #34d399 !important;
+}
+
+.dark .text-amber-700 {
+  color: #fbbf24 !important;
+}
+
+.dark .text-red-650, .dark .text-red-700, .dark .text-red-600 {
+  color: #f87171 !important;
+}
+
+.dark .text-blue-700 {
+  color: #60a5fa !important;
+}
+
+.dark .text-purple-700 {
+  color: #c084fc !important;
+}
+
+/* Hide scrollbar utility for responsive horizontal scrolling */
+.scrollbar-none::-webkit-scrollbar {
+  display: none !important;
+}
+.scrollbar-none {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+

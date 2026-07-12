@@ -1,0 +1,208 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String       @id @default(uuid())
+  email        String       @unique
+  passwordHash String
+  name         String
+  role         String       // "HR_STAFF", "OPERATIONS_STAFF", "CREATIVE_SPECIALIST", "STAKEHOLDER"
+  contractType String       @default("FULL_TIME") // "FULL_TIME", "FREELANCE"
+  baseSalary   Float        @default(0.0)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  // Relations
+  tasks        Task[]
+  checkouts    Checkout[]
+  schedules    ScheduleEntry[]
+  auditLogs    AuditLog[]
+}
+
+model Project {
+  id                   String     @id @default(uuid())
+  name                 String
+  description          String?
+  category             String     // Event Management, Photography, Web Development, Digital Marketing
+  completionPercentage Int        @default(0)
+  status               String     // e.g., "Active", "In Review", "Completed"
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+
+  // Relations
+  tasks                Task[]
+  checkouts            Checkout[]
+  schedules            ScheduleEntry[]
+}
+
+model Task {
+  id          String           @id @default(uuid())
+  projectId   String
+  project     Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title       String
+  priority    String           // Low, Medium, High
+  status      String           // Pending, Active, Review, Completed
+  assignedTo  String?
+  assignee    User?            @relation(fields: [assignedTo], references: [id], onDelete: SetNull)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  // Relations
+  deliverable MediaDeliverable?
+}
+
+model MediaDeliverable {
+  id            String   @id @default(uuid())
+  taskId        String   @unique
+  task          Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  fileUrl       String
+  previewProxy  String   // Downsampled preview proxy
+  designerNotes String?
+  submittedAt   DateTime @default(now())
+}
+
+model InventoryItem {
+  id           String      @id @default(uuid())
+  name         String
+  serialNumber String      @unique
+  category     String
+  status       String      @default("AVAILABLE") // "AVAILABLE", "IN_MAINTENANCE", "RETIRED"
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  // Relations
+  checkouts    Checkout[]
+}
+
+model Checkout {
+  id              String        @id @default(uuid())
+  inventoryItemId String
+  inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projectId       String?
+  project         Project?      @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  checkoutDate    DateTime      @default(now())
+  returnDate      DateTime?
+}
+
+model ScheduleEntry {
+  id             String   @id @default(uuid())
+  employeeId     String
+  employee       User     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  projectId      String
+  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  startTime      DateTime
+  endTime        DateTime
+  notes          String?
+  isApproved     Boolean  @default(false) // Approval state for freelancer billing
+  freelancerRate Float?   // Hourly rate if freelance (nullable)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  timestamp  DateTime @default(now())
+  ipAddress  String?
+  actionType String   // e.g., "CREATE", "UPDATE", "DELETE", "LOGIN"
+  oldValue   String?  // Stringified original object
+  newValue   String?  // Stringified updated object
+}
+
+model AttendanceLog {
+  id            String   @id @default(uuid())
+  employeeId    String
+  employeeName  String
+  checkInTime   String
+  checkOutTime  String?
+  date          String
+  ipAddress     String
+  gpsLocation   String
+  status        String   // On Time, Late, Regularized, Pending Regularization
+  isApproved    Boolean  @default(false)
+  overtimeHours Float?
+  createdAt     DateTime @default(now())
+}
+
+model LeaveRequest {
+  id           String   @id @default(uuid())
+  employeeId   String
+  employeeName String
+  leaveType    String   // Sick Leave, Casual Leave, Annual Leave, Maternity/Paternity, Comp-Off
+  startDate    String
+  endDate      String
+  reason       String
+  status       String   // Pending, Approved, Declined
+  requestedAt  String
+  createdAt    DateTime @default(now())
+}
+
+model HelpDeskTicket {
+  id           String   @id @default(uuid())
+  employeeId   String
+  employeeName String
+  category     String   // Payroll Query, IT Support, Equipment, Leaves & Benefits, Complaint
+  title        String
+  description  String
+  priority     String   // Low, Medium, High, Critical
+  status       String   // Open, In Progress, Resolved
+  slaDeadline  String
+  createdAt    String
+  createdDate  DateTime @default(now())
+}
+
+model PerformanceAppraisal {
+  id                   String   @id @default(uuid())
+  employeeId           String
+  employeeName         String
+  year                 Int
+  okrGoal              String
+  kpiScore             Float
+  selfAppraisal        String
+  managerAppraisal     String
+  peerFeedback         String
+  competencyAssessment String
+  createdAt            DateTime @default(now())
+}
+
+model EmployeeDetails {
+  employeeId            String   @id
+  personalPhone         String
+  emergencyContactName  String
+  emergencyContactPhone String
+  skills                String   // comma-separated or JSON string
+  certifications        String   // comma-separated or JSON string
+  department            String
+  jobTitle              String
+  reportsTo             String
+  customFields          String   // JSON stringified
+  offboardingChecklist  String?  // JSON stringified
+  createdAt             DateTime @default(now())
+}
+
+model EngagementPoll {
+  id             String   @id @default("poll-global")
+  question       String
+  options        String   // JSON stringified options (text, votes)
+  userVotedIndex Int?
+  updatedAt      DateTime @updatedAt
+}
+
+model ForumPost {
+  id         String   @id @default(uuid())
+  authorName String
+  authorRole String
+  content    String
+  timestamp  String
+  createdAt  DateTime @default(now())
+}
+
